@@ -1,86 +1,115 @@
-# React + Vite + TypeScript Template (react-vite-ui)
+# Student Management Frontend Specification
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Dan5py/react-vite-ui/blob/main/LICENSE)
+## Overview
 
-A React + Vite template powered by shadcn/ui.
+Develop a frontend to manage a database of students using **React**, **TypeScript**, and modern frontend libraries/frameworks. The application consists of two main pages with different routes using **React Router**.
 
-## 🎉 Features
+## Tech Stack
 
-- **React** - A JavaScript library for building user interfaces.
-- **Vite** - A fast, opinionated frontend build tool.
-- **TypeScript** - A typed superset of JavaScript that compiles to plain JavaScript.
-- **Tailwind CSS** - A utility-first CSS framework.
-- **Tailwind Prettier Plugin** - A Prettier plugin for formatting Tailwind CSS classes.
-- **ESLint** - A pluggable linting utility for JavaScript and TypeScript.
-- **PostCSS** - A tool for transforming CSS with JavaScript.
-- **Autoprefixer** - A PostCSS plugin to parse CSS and add vendor prefixes.
-- **shadcn/ui** - Beautifully designed components that you can copy and paste into your apps.
+### Core Framework and Libraries:
 
-## ⚙️ Prerequisites
+- **React** (v18.2.0)
+- **React DOM** (v18.2.0)
+- **TypeScript**
 
-Make sure you have the following installed on your development machine:
+### Build Tool:
 
-- Node.js (version 16 or above)
-- pnpm (package manager)
+- **Vite** (v4.3.9)
 
-## 🚀 Getting Started
+### Routing:
 
-Follow these steps to get started with the react-vite-ui template:
+- **React Router DOM** (v6.26.2)
 
-1. Clone the repository:
+### UI Components and Styling:
 
-   ```bash
-   git clone https://github.com/dan5py/react-vite-ui.git
-   ```
+- **Radix UI** (various components)
+- **Tailwind CSS** (v3.3.2)
+- **Tailwind CSS Animate**
+- **Class Variance Authority**
+- **clsx**
+- **Tailwind Merge**
 
-2. Navigate to the project directory:
+### Form Handling:
 
-   ```bash
-   cd react-vite-ui
-   ```
+- **React Hook Form** (v7.53.0)
 
-3. Install the dependencies:
+### Animation:
 
-   ```bash
-   pnpm install
-   ```
+- **Framer Motion** (v11.5.4)
 
-4. Start the development server:
+### Icons:
 
-   ```bash
-   pnpm dev
-   ```
+- **Lucide React** (v0.244.0)
+- **React Icons** (v5.3.0)
 
-## 📜 Available Scripts
+### State Management:
 
-- pnpm dev - Starts the development server.
-- pnpm build - Builds the production-ready code.
-- pnpm lint - Runs ESLint to analyze and lint the code.
-- pnpm preview - Starts the Vite development server in preview mode.
+- **Zustand** (v4.5.5)
 
-## 📂 Project Structure
+### Validation:
 
-The project structure follows a standard React application layout:
+- **Zod** (v3.23.8)
 
-```python
-react-vite-ui/
-  ├── node_modules/      # Project dependencies
-  ├── public/            # Public assets
-  ├── src/               # Application source code
-  │   ├── components/    # React components
-  │   │   └── ui/        # shadc/ui components
-  │   ├── styles/        # CSS stylesheets
-  │   ├── lib/           # Utility functions
-  │   ├── App.tsx        # Application entry point
-  │   └── index.tsx      # Main rendering file
-  ├── .eslintrc.json     # ESLint configuration
-  ├── index.html         # HTML entry point
-  ├── postcss.config.js  # PostCSS configuration
-  ├── tailwind.config.js # Tailwind CSS configuration
-  ├── tsconfig.json      # TypeScript configuration
-  └── vite.config.ts     # Vite configuration
-```
+### Development Tools:
 
-## 📄 License
+- **ESLint**
+- **TypeScript ESLint**
+- **Prettier** (with Tailwind CSS plugin)
+- **Autoprefixer**
+- **PostCSS**
 
-This project is licensed under the MIT License. See the [LICENSE](https://choosealicense.com/licenses/mit/) file for details.
+### Measurement:
+
+- **React Use Measure** (v2.1.1)
+
+## Styling
+
+Use company branding colors as per the included branding guide. Implement styling using **TailwindCSS**.
+
+## Backend Integration
+
+Backend endpoints are defined in the included Postman file.
+
+## Pages
+
+### 1. Grid Page
+
+- Display a grid of students that can be filtered and sorted.
+- Implement a form with validations to add new students.
+- Allow individual record updates and deletions.
+- Include recent lookups from the **Lookup Page**, persisted across page changes.
+- Clicking on a recent lookup opens a drawer with more student details.
+
+#### Features:
+
+- Sorting by **ID**, **Name**, **Class**, and **GPA** (ascending/descending).
+- Client-side search functionality.
+- Pagination with customizable page size and navigation buttons.
+- "Add Student" modal with form validation.
+- "Edit" modal for updating student information.
+- Delete functionality with success/failure toasts.
+- Responsive design with horizontal scroll for the table.
+
+### 2. Lookup Page
+
+- Implement a search bar for looking up students by **UUID**.
+- Display student name when found.
+- Open a drawer with detailed student information when clicked.
+- Add searched students to recent lookups (persisted using Zustand).
+- Show "No student found" message if the search yields no results.
+- Implement debounce effect (2ms) on the search input.
+- Responsive design.
+
+## Setup Instructions
+
+## App Setup
+
+1. Clone the repository
+2. Run `npm install`
+3. Run `npm run dev` to start the development server
+
+## Backend Setup
+
+1. Open terminal and run `./run_server` to start the backend
+2. Import the Postman file to Postman
+3. Create environment variables as needed

@@ -1,22 +1,27 @@
-import CountBtn from '@/components/CountBtn';
-import ReactSVG from '@/assets/react.svg';
-import { Badge } from '@/components/ui/badge';
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
+import GridPage from "./pages/GridPage";
+import LookupPage from "./pages/LookupPage";
+import NavBar from "./components/NavBar";
+import { Toaster } from "./components/ui/toaster";
 
 function App() {
   return (
-    <main className="flex flex-col items-center justify-center h-screen">
-      <div className="flex flex-col items-center gap-y-4">
-        <div className="inline-flex items-center gap-x-4">
-          <img src={ReactSVG} alt="React Logo" className="w-32" />
-          <span className="text-6xl">+</span>
-          <img src={'/vite.svg'} alt="Vite Logo" className="w-32" />
-        </div>
-        <a href="https://ui.shadcn.com" rel="noopener noreferrer nofollow" target="_blank">
-          <Badge variant="outline">shadcn/ui</Badge>
-        </a>
-        <CountBtn />
+    <Router>
+      <div className="min-h-screen bg-white">
+        <NavBar />
+        <Toaster />
+        <Routes>
+          <Route path="/" element={<Navigate replace to="/grid" />} />
+          <Route path="/grid" element={<GridPage />} />
+          <Route path="/lookup" element={<LookupPage />} />
+        </Routes>
       </div>
-    </main>
+    </Router>
   );
 }
 
