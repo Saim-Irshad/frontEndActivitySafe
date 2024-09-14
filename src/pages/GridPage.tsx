@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { CiSearch } from "react-icons/ci";
 import { FaPlus } from "react-icons/fa";
 import { useToast } from "@/hooks/use-toast";
@@ -12,23 +12,14 @@ import PaginationComponent from "@/components/PaginationComponent";
 import StudentTable from "@/components/StudentTableComponent";
 import StudentDetailsCard from "@/components/StudentDetailsCard";
 import { usePagination } from "@/hooks/usePagination";
+import { studentsApi, Student } from "@/api/studentsApi";
+import { useStudents } from "@/hooks/useStudents";
 
-interface Student {
-  uuid: number;
-  name: string;
-  age: number;
-  class: number;
-  gpa: number;
-  sex: string;
-  siblings: number;
-}
-
-const StudentGridPage: React.FC = () => {
+const StudentGridPage = () => {
   const { toast } = useToast();
   const { onOpen: onOpenAddStudentModal } = useAddStudentModal();
-  const [students, setStudents] = useState<Student[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { students, loading, error, fetchStudents, handleDelete } =
+    useStudents();
   const [sortField, setSortField] = useState<keyof Student>("uuid");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [filter, setFilter] = useState("");
@@ -36,6 +27,7 @@ const StudentGridPage: React.FC = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const recentLookups = useRecentLookups((state) => state.recentLookups);
+
   const filteredAndSortedStudents = useMemo(() => {
     return students
       .filter(
@@ -61,24 +53,6 @@ const StudentGridPage: React.FC = () => {
     paginatedItems: paginatedStudents,
   } = usePagination({ items: filteredAndSortedStudents });
 
-  const fetchStudents = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await fetch("http://127.0.0.1:5000/students");
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      setStudents(data);
-    } catch (error) {
-      console.error("Error fetching students:", error);
-      setError("Failed to fetch student data. Please try again later.");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
   useEffect(() => {
     fetchStudents();
   }, [fetchStudents]);
@@ -94,9 +68,6 @@ const StudentGridPage: React.FC = () => {
   const handleStudentUpdate = async () => {
     await fetchStudents();
     setEditingStudent(null);
-    toast({
-      title: "Student updated successfully",
-    });
   };
 
   const handleStudentAdded = async () => {
@@ -112,45 +83,9 @@ const StudentGridPage: React.FC = () => {
     }
   };
 
-  const handleDelete = async (uuid: number) => {
+  const handleStudentClick = async (uuid: number) => {
     try {
-      const response = await fetch(`http://127.0.0.1:5000/student/${uuid}`, {
-        method: "DELETE",
-      });
-      if (!response.ok) {
-        throw new Error(`error! status: ${response.status}`);
-      }
-      const result = await response.json();
-      if (result.success) {
-        setStudents(students.filter((student) => student.uuid !== uuid));
-        toast({
-          title: "Successfully deleted",
-        });
-      } else {
-        throw new Error("Failed to delete student");
-      }
-    } catch (error) {
-      console.error("Error deleting student:", error);
-      toast({
-        variant: "destructive",
-        title: "Error occurred",
-        description: "Failed to delete student. Please try again.",
-      });
-    }
-  };
-
-  const handleStudentClick = (student: Student) => {
-    setSelectedStudent(student);
-    setDrawerOpen(true);
-  };
-
-  const handleRecentLookupClick = async (uuid: number) => {
-    try {
-      const response = await fetch(`http://127.0.0.1:5000/student/${uuid}`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
+      const data = await studentsApi.getStudentById(uuid);
       setSelectedStudent(data);
       setDrawerOpen(true);
     } catch (error) {
@@ -174,7 +109,7 @@ const StudentGridPage: React.FC = () => {
             <li
               key={student.uuid}
               className="bg-gray-50 w-full hover:bg-gray-100 border rounded-lg border-gray-300 shadow p-2 cursor-pointer"
-              onClick={() => handleRecentLookupClick(student.uuid)}
+              onClick={() => handleStudentClick(student.uuid)}
             >
               <p className="font-semibold text-black">{student.name}</p>
               <p className="text-sm text-gray-600">
@@ -263,6 +198,8 @@ const StudentGridPage: React.FC = () => {
           onUpdate={handleStudentUpdate}
         />
       )}
+
+      <AddStudentModal onStudentAdded={handleStudentAdded} />
 
       <DragCloseDrawer open={drawerOpen} setOpen={setDrawerOpen}>
         {selectedStudent && <StudentDetailsCard student={selectedStudent} />}

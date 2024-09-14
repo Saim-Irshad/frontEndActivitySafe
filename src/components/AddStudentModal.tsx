@@ -6,6 +6,7 @@ import { z } from "zod";
 import AuthSelect from "./CustomSelectComponent";
 import CustomInputField from "./CustomInputField";
 import useAddStudentModal from "@/store/useAddStudentModal";
+import { studentsApi, Student } from "@/api/studentsApi";
 
 const options = [
   { value: "male", label: "Male" },
@@ -36,12 +37,10 @@ const studentSchema = z.object({
 type StudentFormData = z.infer<typeof studentSchema>;
 
 interface AddStudentModalProps {
-  onStudentAdded: () => Promise<void>;
+  onStudentAdded: (newStudent: Student) => Promise<void>;
 }
 
-const AddStudentModal: React.FC<AddStudentModalProps> = ({
-  onStudentAdded,
-}) => {
+const AddStudentModal = ({ onStudentAdded }: AddStudentModalProps) => {
   const { toast } = useToast();
   const { isOpen, onClose } = useAddStudentModal();
   const {
@@ -56,19 +55,8 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
 
   const onSubmit = async (data: StudentFormData) => {
     try {
-      const response = await fetch(`http://127.0.0.1:5000/student`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const result = await response.json();
-      console.log(result);
-      await onStudentAdded();
+      const newStudent = await studentsApi.addStudent(data);
+      await onStudentAdded(newStudent);
       onClose();
       reset(); // Reset the form
       toast({
