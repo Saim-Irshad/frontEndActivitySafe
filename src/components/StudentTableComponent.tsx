@@ -26,7 +26,7 @@ interface StudentTableProps {
   sortField: keyof Student;
   sortDirection: "asc" | "desc";
   handleSort: (field: keyof Student) => void;
-  handleStudentClick: (student: Student) => void;
+  handleStudentClick: (uuid: number) => void;
   handleEditClick: (student: Student) => void;
   handleDelete: (uuid: number) => void;
 }
@@ -100,7 +100,7 @@ const StudentTable: React.FC<StudentTableProps> = ({
                   <TableCell className="whitespace-nowrap px-4 py-3">
                     <span
                       className="cursor-pointer flex gap-1 items-center hover:underline"
-                      onClick={() => handleStudentClick(student)}
+                      onClick={() => handleStudentClick(student.uuid)}
                     >
                       {student.name}{" "}
                       <TbExternalLink className="text-safepayGreen" />

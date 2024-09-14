@@ -6,23 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import AuthSelect from "./CustomSelectComponent";
 import CustomInputField from "./CustomInputField";
-
-interface Student {
-  uuid: number;
-  class: number;
-  name: string;
-  sex: string;
-  age: number;
-  siblings: number;
-  gpa: number;
-}
-
-interface EditStudentModalProps {
-  student: Student;
-  isOpen: boolean;
-  onClose: () => void;
-  onUpdate: () => Promise<void>;
-}
+import { studentsApi, Student } from "@/api/studentsApi";
 
 const options = [
   { value: "male", label: "Male" },
@@ -52,6 +36,13 @@ const studentSchema = z.object({
 
 type StudentFormData = z.infer<typeof studentSchema>;
 
+interface EditStudentModalProps {
+  student: Student;
+  isOpen: boolean;
+  onClose: () => void;
+  onUpdate: (updatedStudent: Student) => Promise<void>;
+}
+
 const EditStudentModal: React.FC<EditStudentModalProps> = ({
   student,
   isOpen,
@@ -72,22 +63,11 @@ const EditStudentModal: React.FC<EditStudentModalProps> = ({
 
   const onSubmit = async (data: StudentFormData) => {
     try {
-      const response = await fetch(
-        `http://127.0.0.1:5000/student/${student.uuid}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const result = await response.json();
-      console.log(result);
-      await onUpdate();
+      const updatedStudent = await studentsApi.updateStudent({
+        ...data,
+        uuid: student.uuid,
+      });
+      await onUpdate(updatedStudent);
       onClose();
       toast({
         title: "Student updated successfully",

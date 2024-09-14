@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// InputField.tsx
 import React from "react";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import { Control, Controller } from "react-hook-form";
